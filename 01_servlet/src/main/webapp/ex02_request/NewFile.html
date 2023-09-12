@@ -64,6 +64,36 @@
 	</script>
 	
 	
+	<hr>
+	
+	<!-- 4. 동일한 파라미터를 2개 이상 요청하기 -->
+	<div>
+		<form method="post" action="/servlet/request">
+			<div>
+				<select name="tel">
+					<option>010</option>          <!-- <option value="010">010</option> -->
+					<option>02</option>           <!-- <option value="02">02</option> -->
+					<option>031</option>          <!-- <option value="031"/>도 사용 가능함 -->
+				</select>
+				<input type="text" name="tel">
+				<input type="text" name="tel">
+			</div>	
+			<div>
+				<input type="checkbox" name="hobbies" value="travel" id="travel">
+				<label for="travel">여행</label>
+				<input type="checkbox" name="hobbies" value="game" id="game">
+				<label for="game">게임</label>
+				<input type="checkbox" name="hobbies" value="golf" id="golf">
+				<label for="golf">골프</label>
+			</div>
+			<div>
+				<button type="submit">전송</button>
+			</div>	
+		</form>
+	</div>
+	
+	
+	
 	
 	
 	

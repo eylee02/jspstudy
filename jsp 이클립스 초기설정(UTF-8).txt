@@ -1,0 +1,50 @@
+window → preperence → general workspace textfile encoding UTF-8
+                   web  →      css files          encoding UTF-8
+                                                   html                        encoding  UTF-8
+                                jsp file           encoding UTF-8
+                   xml          xml file           UTF-8인지 확인
+
+
+테마&폰트
+general appearance colors and fonts basic textfont edit 글꼴 크기수정
+             webbrowser chrome으로 변경
+
+들여쓰기설정
+general editors texteditor displayedtabwidth 2로 변경 insert spaces for tabs 체크
+
+java codestyle formatter new myeclipse indentation tappilicy spaceonly로 수정 size 다 2로수정
+
+web client-side.. formatter new myeclipse indentation tappilicy spaceonly로 수정 size 다 2로수정
+    cssfiles indentusingspaces 2
+    htmlfiles indentusingspaces 2
+
+xml xmlfiles editor indentusingspace로 변경 size 2로 수정
+
+
+웹서버
+
+html,css,js 정적서버(static)
+
+jsp 동적서버(dynamic)를 실행하기위해서는 tomcat설치      was
+https://tomcat.apache.org/ tomcat9  core zip  압축풀어서 programfiles 폴더에 넣기
+환경변수 설정하기
+시스템 고급시스템설정 환경변수 시스템변수 새로만들기 변수이름 CATALINA_HOME 디렉터리설정 PATH변수 편집 %CATALINA_HOME%\bin; 맨앞에추가
+이클립스에 등록
+preperence server runtime.. add apache apache tomcat9.0 next tomcat폴더선택 
+하단 server 에 뜬문구 클릭해서 tomcat설정해주기
+
+
+프로젝트생성하고 properties에서 javacompiler에서 java버전수정 17 -> 11
+                                                project facets에서 java버전수정 17 -> 11
+
+servlet : 클라이언트의 요청에 따라 동적으로 서비스를 제공하는 자바클래스
+
+protocol://host:port/contextRoot(프로젝트만들때지정)/urlMapping(servlet만들때 지정)
+http://localhost/servlet/HelloServlet
+
+
+git 레퍼지토리먼저 만들기 -> ignore 작업 먼저 한 후 파일 업로드
+
+
+
+
