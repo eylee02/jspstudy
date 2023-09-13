@@ -6,6 +6,7 @@
 <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
 </head>
 <body>
+	<form id="frm" method="get" action="/servlet/exam">
 		<b>아이디</b>
 	<div>
 		<input type="text" id="id" name="id"><span>@naver.com</span>
@@ -16,7 +17,7 @@
 	</div>
 		<b>비밀번호 재확인</b>
 	<div>
-		<input type="password" id="resPw" name="resPw">
+		<input type="password" id="check_pw" name="check_pw">
 	</div>
 		<b>이름</b>
 	<div>
@@ -42,6 +43,14 @@
 		</select>
 		<input type="text" id="day" name="day" size=4 placeholder="일">
 	</div>
+		<b>성별</b>
+		<div>
+			<select name="gender">
+				<option value="none" id="gender_none" selected>성별</option>
+				<option value="female" id="gender_female">여자</option>
+				<option value="male" id="gender_male">남자</option>
+			</select>
+			</div>
 		<b>본인 확인 이메일(선택)</b>
 	<div>
 		<input type="text" id="email" name="email" placeholder="선택입력">
@@ -64,13 +73,31 @@
 	<div>
 		<button id="join_btn">가입하기</button>
 	</div>
+	</form>
+	
 	<script>
+		$('#join_btn').click(function(event){
+			var id = $('#id').value();
+			var pw = $('#pw').value();
+			var check = $('#check_pw').value();
+			var name = $('#name').value();
+		})
+		
+	
+	
+		$('#frm').submit(function(event){
+			if($('id').value.length === 0){
+				alert('아이디는 필수입니다.');
+				event.preventDefault();
+				return;
+			}
+		})
 		
 	
 	
 	
 	
-	
 	</script>
+	
 </body>
 </html>
