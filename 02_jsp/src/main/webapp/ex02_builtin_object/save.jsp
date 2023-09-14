@@ -1,3 +1,4 @@
+<%@page import="java.net.URLEncoder"%>
 <%@page import="java.io.FileWriter"%>
 <%@page import="java.io.BufferedWriter"%>
 <%@page import="java.io.File"%>
@@ -5,7 +6,6 @@
     pageEncoding="UTF-8"%>
 <%
 	
-
 	// 요청 인코딩
 	request.setCharacterEncoding("UTF-8");
 	
@@ -22,11 +22,11 @@
 	// 저장할 디렉터리가 없으면 생성
 	File dir = new File(realPath);
 	if(!dir.exists()){
-		dir.mkdirs();
+	  dir.mkdirs();
 	}
 	
 	// 저장할 파일명
-	String filename = createdAt + '_' + title + ".txt";
+	String filename = createdAt + "_" + title + ".txt";
 	
 	// 저장할 파일의 File 객체
 	File file = new File(dir, filename);
@@ -42,8 +42,8 @@
 	bout.close();
 	
 	// 파일 생성 여부를 확인하는 xx.jsp로 이동
-	response.sendRedirect(request.getContextPath() + "/ex02_builtin_object/result.jsp?dir=storage&filename=" + filename);
+	response.sendRedirect(request.getContextPath() + "/ex02_builtin_object/result.jsp?dir=storage&filename=" + URLEncoder.encode(filename, "UTF-8"));
 	
-	
+		
 	
 %>
