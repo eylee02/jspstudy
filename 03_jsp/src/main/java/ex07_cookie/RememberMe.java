@@ -1,24 +1,24 @@
-package ex06_session;
+package ex07_cookie;
 
 import java.io.IOException;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 /**
- * Servlet implementation class Login
+ * Servlet implementation class RememberMe
  */
-@WebServlet("/login")
-public class Login extends HttpServlet {
+@WebServlet("/rememberMe")
+public class RememberMe extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public Login() {
+    public RememberMe() {
         super();
         // TODO Auto-generated constructor stub
     }
@@ -31,21 +31,25 @@ public class Login extends HttpServlet {
 		// 요청 인코딩
 		request.setCharacterEncoding("UTF-8");
 		
-		// 요청 파라미터
-		String id = request.getParameter("id");
-		String pw = request.getParameter("pw");
+		// 요청 파라미터 (id, remember_me)
+		String id = request.getParameter("id");                    // 입력 상자의 입력이 없으면 빈 문자열("")
+		String remember_me = request.getParameter("remember_me");  // checkbox의 체크가 없으면 null
 		
-		// 로그인 성공 규칙 : id와 pw가 동일하면 로그인 성공으로 가정하고 풀이
-		if(id.equals(pw)) {
-			// 로그인 처리 : session에 id를 저장해 두기
-			HttpSession session = request.getSession();
-			session.setAttribute("id", id);
-			session.setMaxInactiveInterval(60 * 10);  // 10분간 세션 유지(작성안하면 30분)
+		// 아이디 기억하기 체크했다면 쿠키에 id를 저장한다.
+		Cookie cookie = null;
+		if(remember_me != null) {   // if(remember_me.equals("on")){ 과 동일함
+		 cookie = new Cookie("remember_me", id);
+		 cookie.setMaxAge(60 * 60 * 24 * 15);   // 15일간 쿠키 유지
+		} else {
+		 cookie = new Cookie("remember_me", "");
+		 cookie.setMaxAge(0);                  // 쿠키 삭제를 위해 0초간 쿠키 유지
 		}
 		
-		// 로그인 화면으로 되돌아가기
-		response.sendRedirect(request.getContextPath() + "/ex06_session/main.jsp");
+		// 쿠키는 클라이언트에게 전달한다. 쿠키는 클라이언트가 저장한다.
+		response.addCookie(cookie);
 		
+		// main 화면으로 돌아가기
+		response.sendRedirect(request.getContextPath() + "/ex07_cookie/main.jsp");
 		
 		
 	}

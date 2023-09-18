@@ -9,16 +9,16 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 /**
- * Servlet implementation class Login
+ * Servlet implementation class Logout
  */
-@WebServlet("/login")
-public class Login extends HttpServlet {
+@WebServlet("/logout")
+public class Logout extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public Login() {
+    public Logout() {
         super();
         // TODO Auto-generated constructor stub
     }
@@ -28,20 +28,9 @@ public class Login extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
-		// 요청 인코딩
-		request.setCharacterEncoding("UTF-8");
-		
-		// 요청 파라미터
-		String id = request.getParameter("id");
-		String pw = request.getParameter("pw");
-		
-		// 로그인 성공 규칙 : id와 pw가 동일하면 로그인 성공으로 가정하고 풀이
-		if(id.equals(pw)) {
-			// 로그인 처리 : session에 id를 저장해 두기
-			HttpSession session = request.getSession();
-			session.setAttribute("id", id);
-			session.setMaxInactiveInterval(60 * 10);  // 10분간 세션 유지(작성안하면 30분)
-		}
+		// 로그아웃 : session 초기화
+		HttpSession session = request.getSession();
+		session.invalidate();
 		
 		// 로그인 화면으로 되돌아가기
 		response.sendRedirect(request.getContextPath() + "/ex06_session/main.jsp");

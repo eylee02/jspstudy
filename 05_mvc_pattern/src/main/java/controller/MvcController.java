@@ -1,4 +1,4 @@
-package ex06_session;
+package controller;
 
 import java.io.IOException;
 import javax.servlet.ServletException;
@@ -6,19 +6,21 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
+
+import service.MvcService;
+import service.MvcServiceImpl;
 
 /**
- * Servlet implementation class Login
+ * Servlet implementation class MvcController
  */
-@WebServlet("/login")
-public class Login extends HttpServlet {
+@WebServlet("*.do")
+public class MvcController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public Login() {
+    public MvcController() {
         super();
         // TODO Auto-generated constructor stub
     }
@@ -28,25 +30,25 @@ public class Login extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
-		// 요청 인코딩
-		request.setCharacterEncoding("UTF-8");
-		
-		// 요청 파라미터
-		String id = request.getParameter("id");
-		String pw = request.getParameter("pw");
-		
-		// 로그인 성공 규칙 : id와 pw가 동일하면 로그인 성공으로 가정하고 풀이
-		if(id.equals(pw)) {
-			// 로그인 처리 : session에 id를 저장해 두기
-			HttpSession session = request.getSession();
-			session.setAttribute("id", id);
-			session.setMaxInactiveInterval(60 * 10);  // 10분간 세션 유지(작성안하면 30분)
-		}
-		
-		// 로그인 화면으로 되돌아가기
-		response.sendRedirect(request.getContextPath() + "/ex06_session/main.jsp");
-		
-		
+	  request.setCharacterEncoding("UTF-8");
+	  
+	  String requestURI = request.getRequestURI();                     /* /mvc/getDate.do */
+	  String contextPath = request.getContextPath();                   /* /mvc            */
+	  String urlMapping = requestURI.substring(contextPath.length());  /* /getDate.do     */
+	  
+	  MvcService mvcService = new MvcServiceImpl();
+	  String path = null;
+	  
+	  switch(urlMapping) {
+	  case "/getDate.do":
+		 path = mvcService.getDate(request);
+		 break;
+	  case "/getTime.do":
+		 path = mvcService.getTime(request);
+		 break;
+	  }
+	  
+	  request.getRequestDispatcher(path).forward(request, response);
 		
 	}
 
