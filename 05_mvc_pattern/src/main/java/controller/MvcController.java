@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import common.ActionForward;
 import service.MvcService;
 import service.MvcServiceImpl;
 
@@ -29,27 +30,44 @@ public class MvcController extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		
+				
+	  // 요청 인코딩 + 응답 타입과 인코딩
 	  request.setCharacterEncoding("UTF-8");
+	  response.setContentType("text/html; charset=UTF-8");
 	  
+	  // 요청 확인(URLMapping 확인)
 	  String requestURI = request.getRequestURI();                     /* /mvc/getDate.do */
 	  String contextPath = request.getContextPath();                   /* /mvc            */
 	  String urlMapping = requestURI.substring(contextPath.length());  /* /getDate.do     */
 	  
+	  // 서비스 객체 생성(MVC Pattern에서 Model에 해당함)
 	  MvcService mvcService = new MvcServiceImpl();
-	  String path = null;
 	  
+	  // 서비스 실행 결과(어디로 어떻게 이동할 것인가에 관한 저보가 저장)
+	  ActionForward af = null;
+	  
+	  // 요청에 따른 서비스 실행
 	  switch(urlMapping) {
 	  case "/getDate.do":
-		 path = mvcService.getDate(request);
+		 af = mvcService.getDate(request);
 		 break;
 	  case "/getTime.do":
-		 path = mvcService.getTime(request);
+		 af = mvcService.getTime(request);
+		 break;
+	  case "/getDatetime.do":
+		 mvcService.getDatetime(request, response);
 		 break;
 	  }
 	  
-	  request.getRequestDispatcher(path).forward(request, response);
-		
+	  // 서비스 실행 결과에 의한 이동 (redirect와 forward의 선택은 서비스에서 결정함)
+	  if(af != null) {
+		  if(af.isRedirect()) {
+		   response.sendRedirect(af.getPath());
+		  } else {
+		   request.getRequestDispatcher(af.getPath()).forward(request, response);			  
+		  }
+	  }
+	
 	}
 
 	/**
