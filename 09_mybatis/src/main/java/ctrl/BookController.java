@@ -8,20 +8,21 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import common.ActionForward;
-import service.BoardService;
-import service.BoardServiceImpl;
+import service.BookService;
+import service.BookServiceImpl;
 
 /**
- * Servlet implementation class BoardController
+ * Servlet implementation class BookController
  */
 @WebServlet("*.do")
-public class BoardController extends HttpServlet {
+public class BookController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-       
+     
+	private BookService bookService = new BookServiceImpl();
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public BoardController() {
+    public BookController() {
         super();
         // TODO Auto-generated constructor stub
     }
@@ -31,10 +32,7 @@ public class BoardController extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
-		// BoardFilter 실행 후 Controller 실행
-		
-		// 요청 인코딩(BoardFilter가 수행함) + 응답 타입과 인코딩
-		// request.setCharacterEncoding("UTF-8");
+		// 응답 타입과 인코딩
 		response.setContentType("text/html charset=UTF-8");
 		
 		// 요청 주소 확인
@@ -42,43 +40,41 @@ public class BoardController extends HttpServlet {
 		String contextPath = request.getContextPath();
 		String urlMapping = requestURI.substring(contextPath.length());
 		
-		// 어디로 어떻게 이동할 것인지 알고 있는 ActionForward 객체
+		// ActionForward 객체
 		ActionForward af = null;
 		
 		// BoardService 객체 생성
-		BoardService boardService = new BoardServiceImpl();
+		BookService bookService = new BookServiceImpl();
 		
 		// 요청에 따른 처리
 		switch(urlMapping) {
-		// 단순 이동 (forward 처리)
-		case "/board/write.do":
-			af = new ActionForward("/board/write.jsp", false);
+		
+		case "/book/write.do":
+			af = new ActionForward("/book/write.jsp", false);
 			break;
 		case "/index.do":
 			af = new ActionForward("/index.jsp", false);
 			break;
-			// 서비스 처리
-		case "/board/register.do":
-			af = boardService.register(request);
-			break;
-		case "/board/list.do":
-			af = boardService.getBoardList(request);
-			break;
-		case "/board/detail.do":
-			af = boardService.getBoardByNo(request);
-			break;
-		case "/board/edit.do":
-			af = boardService.edit(request);
-			break;
-		case "/board/modify.do":
-			af = boardService.modify(request);
-			break;
-		case "/board/delete.do":
-			af = boardService.delete(request);
-			break;
+		case "/book/add.do":
+		      af = bookService.bookAdd(request);
+		      break;
+		case "/book/list.do":
+		      af = bookService.bookList(request);
+		      break;
+		case "/book/detail.do":
+		      af = bookService.bookDetail(request);
+		      break;
+		case "/book/edit.do":
+		      af = bookService.bookEdit(request);
+		      break;
+		case "/book/modify.do":
+		      af = bookService.bookModify(request);
+		      break;
+		case "/book/delete.do":
+		      af = bookService.bookDelete(request);
+		      break;
 		}
 		
-		// 이동
 		if(af != null) {
 			if(af.isRedirect()) {
 				response.sendRedirect(af.getPath());
@@ -86,6 +82,9 @@ public class BoardController extends HttpServlet {
 				request.getRequestDispatcher(af.getPath()).forward(request, response);
 			}
 		}
+		
+		
+		
 		
 		
 	}

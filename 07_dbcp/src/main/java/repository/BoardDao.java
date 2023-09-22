@@ -3,6 +3,9 @@ package repository;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
@@ -71,8 +74,7 @@ public class BoardDao {
 			ps.setString(2, dto.getContent()); // 2번째 물음표(?)에 dto.getContent() 전달하기
 			
 			// 쿼리문의 실행
-			insertResult = ps.executeUpdate();
-			
+			insertResult = ps.executeUpdate();			
 			
 		} catch (Exception e) {
 			e.printStackTrace();			
@@ -82,21 +84,169 @@ public class BoardDao {
 		// 등록 결과 반환
 		return insertResult;
 		
+	}
+	
+	// 게시글 개수 반환 메소드
+	public int getBoardCount() {
+		
+		// 게시글 개수
+		int count = 0;
+		
+		try {
+			
+			con = dataSource.getConnection();
+			String sql = "SELECT COUNT(*) FROM BOARD_T";  // COUNT(*)
+			                                              // ---------
+			                                              //   120 			
+			ps = con.prepareStatement(sql);
+			rs = ps.executeQuery();
+			if(rs.next()) {
+				count = rs.getInt(1);   // count = rs.getInt("COUNT(*)")도 가능함
+			}		
+		} catch(Exception e) {
+			e.printStackTrace();
+		} finally {
+			close();
+		}
+		
+		
+		// 게시글 개수 반환
+		return count;
+		
 		
 	}
 	
-	/*
-	 * SELECT A.BOARD_NO, A.TITLE, A.CONTENT, A.MODIFIED_AT, A.CREATED_AT
-         FROM (SELECT ROW_NUMBER() OVER (ORDER BY BOARD_NO DESC) AS RN, BOARD_NO, TITLE, CONTENT, MODIFIED_AT, CREATED_AT
-                 FROM BOARD_T) A
-        WHERE A.RN BETWEEN 1 AND 2;
-	 */
+	// 게시글 목록 반환 메소드
+	public List<BoardDto> getBoardList(Map<String, Object> map){
+		
+		// 게시글 목록 저장 List
+		List<BoardDto> list = new ArrayList<BoardDto>();
+		
+		try {
+			
+			con = dataSource.getConnection();
+			String sql = "SELECT A.BOARD_NO, A.TITLE, A.CONTENT, A.MODIFIED_AT, A.CREATED_AT"
+					+ "     FROM (SELECT ROW_NUMBER() OVER (ORDER BY BOARD_NO DESC) AS RN, BOARD_NO, TITLE, CONTENT, MODIFIED_AT, CREATED_AT"
+					+ "             FROM BOARD_T) A"
+					+ "    WHERE A.RN BETWEEN ? AND ?";
+			ps = con.prepareStatement(sql);
+			ps.setInt(1, (int)map.get("begin"));
+			ps.setInt(2, (int)map.get("end"));
+			rs = ps.executeQuery();
+			while(rs.next()) {
+				// rs -> BoardDto
+				BoardDto dto = BoardDto.builder()
+						      .board_no(rs.getInt(1))
+						      .title(rs.getString(2))
+						      .content(rs.getString(3))
+						      .modified_at(rs.getDate(4))
+						      .created_at(rs.getDate(5))
+						      .build();
+				// BoardDto -> list 추가
+				list.add(dto);				
+			}
+		} catch(Exception e) {
+			e.printStackTrace();
+		} finally {
+			close();
+		}
+		
+		// 게시글 목록 반환
+		return list;
+	}
 	
+	// 게시글 반환 메소드
+	public BoardDto getBoardByNo(int board_no) {
+		
+		// 게시글 
+		BoardDto dto = null;
+		
+		try {
+			
+			con = dataSource.getConnection();
+			String sql = "SELECT BOARD_NO, TITLE, CONTENT, MODIFIED_AT, CREATED_AT"
+					  +  "  FROM BOARD_T"
+					  +  " WHERE BOARD_NO = ?";
+			ps = con.prepareStatement(sql);
+			ps.setInt(1, board_no);
+			rs = ps.executeQuery();
+			if(rs.next()) {
+				dto = BoardDto.builder()
+					 .board_no(rs.getInt(1))
+					 .title(rs.getString(2))
+					 .content(rs.getString(3))
+					 .modified_at(rs.getDate(4))
+					 .created_at(rs.getDate(5))
+					 .build(); 
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			close();
+		}
+		
+		// 게시글 반환
+		return dto;
+		
+	}
 	
+	// 게시글 수정 메소드
+	public int modify(BoardDto dto) {
+		
+		// 수정 결과
+		int modifyResult = 0;
+		
+		
+		try {
+			
+			con = dataSource.getConnection();
+			String sql = "UPDATE BOARD_T"
+					   + "   SET TITLE = ?, CONTENT = ?, MODIFIED_AT = SYSDATE"
+					   + " WHERE BOARD_NO = ?";
+			
+			ps = con.prepareStatement(sql);
+			ps.setString(1, dto.getTitle());
+			ps.setString(2, dto.getContent());
+			ps.setInt(3, dto.getBoard_no());
+			modifyResult = ps.executeUpdate();
+			
+		} catch(Exception e) {
+			e.printStackTrace();
+		} finally {
+			close();
+		}
+		
+		// 수정 결과 반환
+		return modifyResult;
+		
+		
+	}
 	
-	
-	
-	
+	// 게시글 삭제 메소드
+	public int delete(int board_no) {
+		
+		// 삭제 결과
+		int deleteResult = 0;
+		
+		
+		try {
+			
+			con = dataSource.getConnection();
+			String sql = "DELETE FROM BOARD_T WHERE BOARD_NO = ?";
+			ps = con.prepareStatement(sql);
+			ps.setInt(1, board_no);
+			deleteResult = ps.executeUpdate();
+			
+		} catch(Exception e) {
+			e.printStackTrace();
+		} finally {
+			close();
+		}
+		
+		// 삭제 결과 반환
+		return deleteResult;
+		
+	}
 	
 
 }

@@ -6,11 +6,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Data
 public class PageVo {
-
 	
 	// 페이지 목록 만들기
-	private int page;           // 현재 페이지 번호(요청 파라미터로 받는다.)
-	private int total;          // 전체 항목의 개수(DB에서 구한 뒤 받는다.)
+	private int page;
+	private int total;
 	private int display;        // 한 페이지에 표시할 항목의 개수(요청 파라미터로 받는다.)
 	private int begin;          // 한 페이지에 표시되는 항목의 시작 번호(계산한다.)
 	private int end;            // 한 페이지에 표시되는 항목의 종료 번호(계산한다.)
@@ -90,4 +89,5 @@ public class PageVo {
 	}
 	
 	
+
 }
